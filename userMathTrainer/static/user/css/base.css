@@ -1,0 +1,160 @@
+:root{
+    --black: #000000;
+    --white: #ffffff;
+    --blue: #1825d4;
+    --light_blue: #514fe7;
+}
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+ 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.c_white{
+    color: var(--white);
+}
+.c_blue{
+    color: var(--white);
+}
+
+
+.bg_blue{
+    background-color: var(--blue);
+}
+.bg_black{
+    background-color: var(--black);
+}
+.bg_white{
+    background-color: var(--white);
+}
+.bg_l_blue{
+    background-color: var(--light_blue);
+}
+
+
+.f_r{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+.f_r_start{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.f_r_space_around{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+.f_r_space_between{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.f_c{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.f_c_start{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.f_c_space_around{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.f_c_space_between{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+.margin{
+    margin: 0 auto;
+}
+
+a{
+    text-decoration: none;
+}
+
+
+nav{
+    width: 100%;
+    color: var(--white);
+    height: 5rem;
+
+
+}
+nav a{
+    font-size: 20px;
+    color: inherit;
+}
+nav h1{
+    font-size: 35px;
+}
+
+#search_form{
+    position: relative;
+    left: 15%;
+}
+#search_form button img{
+    width: 25px;
+    height: 25px;
+}
+#search_form button{
+    position: relative;
+    background-color: var(--blue);
+    border: 1px solid var(--light_blue);
+    border-radius: 10px;
+    width: 3rem;
+    height: 2.5rem;
+    position: relative;
+    right: 45px;
+    
+}
+
+
+
+#search_form input{
+    height: 1rem;
+    font-size: 20px;
+    padding: 10px 1rem;
+    padding-right: 3rem;
+    border-radius: 10px;
+}
+#login_bt{
+    background: var(--white);
+    padding: 10px 1rem;
+    color: var(--blue);
+    border: 1px solid var(--light_blue);
+
+    border-radius: 10px;
+}
+.sign_up_bt {
+    background: var(--white);
+    color: var(--blue);
+    padding: 10px 20px;
+    border: 1px solid var(--light_blue);
+
+    white-space: nowrap;
+    border-radius: 10px;
+}

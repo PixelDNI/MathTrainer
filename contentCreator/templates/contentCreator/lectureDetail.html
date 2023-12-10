@@ -1,0 +1,16 @@
+{% extends 'contentCreator/base.html' %}
+{% block content %}
+  {{lecture}}
+<div style="width: 70%; margin: 0 auto; font-size: 25px;">  {{lecture.paragraph|safe }} </div>
+
+
+  <a href="{% url 'add_common_test' lecture.id %}">Add common question</a>
+  <a href="{% url 'add_choice_test' lecture.id %}">Add choice question</a>
+<div>
+  
+  {% for test in tests %}
+    {{test.title}}
+  {% endfor %}
+    
+</div>
+{% endblock %}

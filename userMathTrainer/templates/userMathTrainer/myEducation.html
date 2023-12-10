@@ -1,0 +1,10 @@
+{% extends 'user/base.html' %}
+
+
+
+{% block content %}
+    {% for course in mathcourse_list %}
+       <div>{{course}}</div>
+        {% endfor %}
+{% endblock content %}
+    

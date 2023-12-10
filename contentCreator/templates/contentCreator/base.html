@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href=" {% static 'creator/base.css' %}"> -->
+    <link rel="stylesheet" href=" {% static 'creator/Cbase.css' %}">
+    <link rel="stylesheet" href="{% static 'creator/courseDetail.css' %}">
+    <link rel="stylesheet" href="{% static 'creator/form.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    
+    {% block navbar %}
+        <nav class="f_r_space_between">
+            <div class="f_r_space_around" style="width:40rem; margin: 0 3rem;" >
+            <h1>Math Trainer</h1>
+                <div class="f_r_space_around" style="width: 15rem; margin: 0 3rem;">
+                    <!-- <a href="url {% url 'content_creator_dashboard' %}">Home</a> -->
+                    <a href="{% url 'add_math_course' %}">Add math course</a>
+                    <a href="{% url 'all_author_courses' user.id %}">My courses</a>
+                </div>
+            </div>      
+            <div>
+                <a href="{% url 'logout' %}" style="font-size: 35px; margin-right: 10rem;"> Logout </a>
+            </div>
+        </nav>
+    {% endblock navbar %}
+
+
+    
+    {% block form %}
+        
+    {% endblock form %}
+        
+    {% block content %}
+    {% endblock %}
+
+    {% block footer %}
+
+        <footer style="width: 100%; background: blue; height: 20rem; margin-top: 5rem;">
+            <h1 style="color: white;">Footer</h1>
+        </footer>
+
+    {% endblock footer %}
+</body>
+</html>

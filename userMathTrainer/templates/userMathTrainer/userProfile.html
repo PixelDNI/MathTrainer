@@ -1,0 +1,7 @@
+{% extends 'userMathTrainer/base.html' %}
+{% block content %}
+  {{ user.username }}
+  {{ user.email }}
+  <a href="{% url 'logout' %}"> logout </a>
+  <a href="{% url 'user_courses' %}">My courses</a>
+{% endblock %}

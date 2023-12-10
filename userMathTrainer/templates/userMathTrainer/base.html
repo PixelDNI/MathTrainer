@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'user/css/base.css' %}">
+    <!-- <link rel="stylesheet" href="{% static 'user/css/Cbase.css' %}"> -->
+    <link rel="stylesheet" href="{% static 'user/css/courses.css' %}">
+    <link rel="stylesheet" href="{% static 'creator/courseDetail.css' %}">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+</head>
+<body>
+    
+    {% block navbar %}
+        <nav class="f_r_space_between bg_blue c_white">
+            <div id="nav_logo" style="position: relative; left: 5%;">
+                <h1>MathTrainer</h1>
+            </div>
+            <!-- <div class='f_r_space_around' style="width: 70%;">
+                <a href="{% url 'start_page' %}">
+                    Home
+                </a>
+                <a href="{% url 'courses' %}">
+                    Courses
+                </a>
+                <a href="{% url 'about_us' %}">
+                    About Us
+                </a>
+                <a href="{% url 'contacts' %}">
+                    Contacts
+                </a>
+                <a href="{% url 'add' %}">
+                    add
+                </a> -->
+                <div class="f_r_space_around" style="width: 20rem;">
+                    <a href="{% url 'courses' %}">
+                        Catalog
+                    </a>
+                    <a href="{% url 'add' %}">
+                        Teaching
+                    </a> 
+                    {% if user.is_authenticated and user.is_author == False %}
+                    <a href="{% url 'my_education' user.id %}">
+                        My education
+                    </a>
+                {% endif %}
+                </div>
+                <form action="" method="post" class="f_r_start" id="search_form">
+
+                    <input type="text" placeholder="Search ...">
+                    <button >
+                        <img src="{% static 'user/icons/search_icon.png'%}" alt="">
+                    </button>
+
+                </form>
+
+            </div>
+            <div class="f_r_space_around" style="width: 15rem; margin: 0 5rem;">
+    {% if not user.is_authenticated %}
+        <a href="{% url 'sign_up' %}" class="sign_up_bt">
+            Sign up
+        </a>
+        <a href="{% url 'login' %}" id="login_bt">
+            Login
+        </a>
+    {% else %}
+        <a href="{% url 'logout' %}" class="sign_up_bt">
+            Logout
+        </a>
+
+        <a href="{% url 'profile' user.id %}" id="login_bt">
+            Profile
+        </a>
+
+    {% endif %}
+</div>
+        </nav>
+    {% endblock  %}
+
+
+
+
+    {% block content %}
+    {% endblock %}
+
+    {% block all_courses %}
+
+    {% endblock %}
+
+
+    {% block course_detail %}
+    {% endblock %}
+
+    {% block lecture_detail %}
+    {% endblock %}
+
+    {% block module %}
+
+    {% endblock %}
+</body>
+</html>
