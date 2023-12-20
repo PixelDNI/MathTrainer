@@ -12,7 +12,7 @@ class CreateCourseForm(ModelForm):
 class CreateModuleForm(ModelForm):
     class Meta:
         model = CourseModule
-        exclude = ('math_course',)
+        exclude = ('math_course', 'is_passed', 'order')
 
 
 class CreateLectureForm(ModelForm):
@@ -36,7 +36,16 @@ class CreateChoiceTestForm(ModelForm):
         exclude = ('lecture',)
 
 
+
 class CreateAnswerForm(ModelForm):
     class Meta:
         model = Answer
         exclude = ('choice_test',)
+
+
+class UpdateProfile(ModelForm):
+    class Meta:
+        model = AuthorProfile
+        exclude = ('author','reputation','subscribers', )
+
+

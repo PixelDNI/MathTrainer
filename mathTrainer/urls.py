@@ -24,4 +24,4 @@ urlpatterns = [
     path('', include('userMathTrainer.urls')),
     path('', include('django.contrib.auth.urls')),
     path('content_creator/', include('contentCreator.urls'))
-] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

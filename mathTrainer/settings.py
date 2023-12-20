@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'adminMathTrainer',
     'ckeditor',
     'userMathTrainer',
+    'userMathTrainer.templatetags',
+
 
 ]
 

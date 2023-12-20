@@ -1,18 +1,24 @@
+
+{% extends 'userMathTrainer/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static 'user/css/signUp.css' %}">
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">login</button> 
-    </form>
-</body>
-</html>
+
+{% block add_css %}
+<link rel="stylesheet" href="{% static 'user/css/signUp.css' %}">
+{% endblock add_css %}
+    
+
+
+{% block content %}
+<div class="f_c" style="width: 100%; min-height: 40rem;">
+<form method="post" id='sign_up_form' style="padding: 1rem 2rem;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">login</button> 
+</form>
+</div>
+<div >
+
+</div>
+
+{% endblock content %}
+    

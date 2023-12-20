@@ -3,7 +3,12 @@
 
 
 {% block content %}
-<div id="all_courses_block" class="f_r_space_between" style="flex-wrap: wrap; align-items: flex-start;">
+<div id="all_courses_block" class="f_r_space_between" style="flex-wrap: wrap; align-items: flex-start; min-height: 30rem;">
+    
+    {% if course_list%}
+        <h1>You have not added any courses yet!</h1>
+    {% endif %}
+        
     {% for course in courses_list %}
         <a href="{% url 'course_detail' course.id %}" class="course_card f_r_space_between" style="margin: 1rem 0;"  >
             
@@ -31,8 +36,6 @@
                     <img src="{{ course.course_image.url }}" alt="img">
                 </div>
               
-            
-
             
          </a>
 

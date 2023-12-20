@@ -1,6 +1,21 @@
 {% extends 'userMathTrainer/base.html' %}
 {% load static %}
 
+
+
+{% block add_css %}
+<link rel="stylesheet" href="{% static 'user/css/CcourseDetail.css' %}">
+
+
+
+
+
+<link rel="stylesheet" href="{% static 'creator/lectureDetail.css' %}">
+
+
+{% endblock add_css %}
+    
+
 {% block title %}
    Course Detail
 {% endblock %}
@@ -21,7 +36,7 @@
                     <h1>{{course.title}}</h1>
                 </div>
                 <div id="description_container">
-                    <h3>{{course.description}}</h3>
+                    <h3>{{course.description|safe}}</h3>
                 </div>
                 <div class="f_r_space_around" style="width: 5rem; margin-top: 1rem;">
                     <img src="{% static 'images/clock.png' %}" alt="" style="width: 20px; height: 20px;">
@@ -33,7 +48,9 @@
                             hour
                         {% endif %}
                              </p>
+                 
                 </div>
+                <a href="{% url 'author_profile' course.author.id %}" style="font-size: 25px; color: white; margin-top: 1rem;"> by {{course.author.username}}</a>
             </div>
 
             <div>
@@ -43,17 +60,45 @@
     </div>
 
     <div class="f_c" style="position: relative; left: 40rem; margin-top: 2rem;">
-        {% if course.price == 0 %}
-            <h1>Free</h1>
-            <a href="{% url 'get_course' course.id %}" style="font-size: 25px; background: green; color: white; padding: 1rem 2rem; border-radius: 10px; margin-top: 2rem;">Buy</a>
-            <a href="{% url 'to_favorites' course.id %}" style="font-size: 25px; background: rgb(1, 162, 255); color: white; padding: 1rem 2rem; border-radius: 10px; margin-top: 2rem;">To Favorites</a>
 
-        {% else %}
-            <h1>Price {{course.price}}</h1>
-        {% endif %}
+
+            
+            {% if user.is_authenticated %}
+                
+                {% if is_enrolled %}
+                <a href="{% url 'remove_course' course.id %}"class="course_button" >Remove</a>
+                {% else %}
+                    {% if course.price == 0 %}
+                <a href="{% url 'get_course' course.id %}"class="course_button" >Enroll</a>
+                    {% else %}
+                    <a href="{% url 'get_course' course.id %}" class="course_button">Buy</a>
+                    {% endif %}
+                {% endif %}
+                    
+          
+              
+            
+                {% if is_favorite %}
+                    <a href="{% url 'remove_favorites' course.id %}" class="course_button" >Remove From Favorites</a>
+                    {% else %}
+                    <a href="{% url 'to_favorites' course.id %}" class="course_button" >To Favorites</a>
+                {% endif %}
+                
+    
+            {% else %}
+
+
+            {% if course.price == 0 %}
+                <a href="{% url 'sign_up' %}" class="course_button" >Enroll</a>
+            {% else %}
+            <a href="{% url 'sign_up' %}" class="course_button">Buy</a>
+            {% endif %}
+            <a href="{% url 'sign_up' %}" class="course_button">To Favorites</a>
+            {% endif %}
+            
     </div>
 
-    <div id="course_content_container" class="f_c_space_around">
+    <div id="course_content_container" class="f_c_start"  >
         {{course.course_content|safe}}
         <div style="width: 100%;">
             <h1>Modules</h1>
@@ -65,7 +110,9 @@
                 <div>
                     {% for lecture in lectures %}
                         {% if lecture.course_module == module %}
-                        <p style="margin-left: 2rem;">{{ lecture.title }}</p> 
+                        <p style="margin-left: 2rem;">{{ lecture.title }}</p>
+
+
                         {% endif %}
                     {% endfor %}
                 </div>
@@ -74,5 +121,39 @@
         </div>
     </div>
 </div>
+<form  class='f_c' action="{% url 'add_comment' course.pk %}" method="post" style="margin-top: 3rem">
+    {% csrf_token %}
+    {{ form.media }}
+    {{ form.as_p }}
+    <div class='f_r_space_between' style="width: 100%; margin-top: 10px;">
+        <div></div>
+        <button type="submit" id="send_comment_bt" style="background-color: transparent; border: 1px solid black; border-radius: 10px; padding: 5px; cursor: pointer;">
+            <img src="{% static 'user/icons/send_bt.png' %}" alt="" style="width: 30px; height: 30px;">
+        </button>
+    </div>
 
+</form>
+
+<div class='f_c_space_around' id="comments" style="width: 70%;">
+    
+    {% for comment in comments %}
+    <div class="f_c_start" style="width: 50%; margin-top: 1rem; min-height: 5rem; justify-content: start; padding: 1rem;">
+
+        <div class="f_r_space_between" style="width: 100%;">
+            <div class="f_c">
+            {% if comment.user.user_profile.profile_photo %}
+            <img src="{{ comment.user.user_profile.profile_photo.url }}" alt="User Photo" style="width: 50px; height: 50px; border-radius: 50%;">
+            {% endif %}
+            <p style="font-size: 20px; font-weight: bolder;">{{ comment.user.username }}</p>
+            </div>
+
+            <p>{{ comment.comment_date }}</p>
+        </div>
+        <p style="margin: 1rem 2rem; max-width: 20rem; overflow-wrap: break-word; word-wrap: break-word;">{{ comment.text_field|safe }}</p>
+    </div>
+{% endfor %}
+        
+
+
+</div>
 {% endblock %}

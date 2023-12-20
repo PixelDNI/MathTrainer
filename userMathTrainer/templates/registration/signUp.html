@@ -1,23 +1,25 @@
-{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- <link rel="stylesheet" href="{% static 'user/css/signUp.css' %}"> -->
-    <!-- <link rel="stylesheet" href="{% static 'user/css/signUp.css' %}"> -->
-    <link rel="stylesheet" href="{% static 'user/css/signUp.css' %}">
+{% extends 'userMathTrainer/base.html' %}
+
+{% load static %}
     
-</head>
-<body>
-    <form action="" method="post">
+    {% block add_css %}
+    <link rel="stylesheet" href="{% static 'user/css/CsignUp.css' %}">
+    {% endblock add_css %}
+        
+
+
+{% block content %}
+    
+
+    <form action="" method="post" id="sign_up_form">
         <h1>Sign up</h1>
         {% csrf_token %}
         {{form.as_p}}
         <button type="submit" >Sign up</button>
     </form>
-</body>
-</html>
+<div style="width: 100%; min-height: 20rem;">
+
+</div>
+{% endblock content %}
+    

@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import *
 from django.core.paginator import Paginator
@@ -24,12 +24,17 @@ class StartPageView(ListView):
 
 def CreateNewCourseView(request):
     if request.method == 'POST':
+        print('AAAAA')
         form = CreateCourseForm(request.POST, request.FILES)
         if form.is_valid():
+            print('BBBBB')
             course = form.save(commit=False)
             course.author = request.user
+            print(course)
             course.save()
-            return redirect('content_creator_dashboard')
+            return redirect('add_module', course.id)
+        else:
+            print(form.errors)
     else:
         form = CreateCourseForm()
 
@@ -43,12 +48,19 @@ def CreateModuleView(request, pk):
             module = form.save(commit=False)
             math_course = get_object_or_404(MathCourse, id=pk)
             module.math_course = math_course
-            module.save()
 
-            return redirect('content_creator_dashboard')
+            all_modules = CourseModule.objects.filter(math_course=math_course).count()
+
+            module.order = all_modules + 1
+
+            module.save()
+            print(module.order)
+
+            return redirect('add_lecture', id=pk, pk=module.id)
 
     else:
-        form = CreateModuleForm
+        form = CreateModuleForm()
+
     return render(request, simplified_path('createModulePage'), {'form': form})
 
 
@@ -58,8 +70,8 @@ class UpdateModuleView(UpdateView):
     fields = ('title', 'module_image', 'description',)
 
     def get_success_url(self):
-        module = self.object
-        return reverse('module_detail', args=[module.id])
+        course_id = self.kwargs['id']
+        return reverse('course_detail', args=[course_id])
 
 
 class DeleteModuleView(DeleteView):
@@ -79,19 +91,25 @@ class DeleteModuleView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 
-def AddLectureView(request, pk):
+def AddLectureView(request, pk, id):
     if request.method == 'POST':
         form = CreateLectureForm(request.POST, request.FILES)
-
         if form.is_valid():
             lecture = form.save(commit=False)
             module = get_object_or_404(CourseModule, id=pk)
             lecture.course_module = module
+
+            all_lectures = Lecture.objects.filter(course_module=module).count()
+
+            lecture.order = all_lectures + 1
+
             lecture.save()
-            return redirect(reverse('module_detail', args=[module.id]))
+            print(lecture.order)
+            return redirect('course_detail', pk=id)
 
     else:
-        form = CreateLectureForm(request.POST, request.FILES)
+        form = CreateLectureForm()
+
     return render(request, simplified_path('addLecture'), {'form': form})
 
 
@@ -105,6 +123,8 @@ def AddCommonTestView(request, pk):
             test.lecture = lecture
             test.save()
             return redirect(reverse('lecture_detail', args=[lecture.id]))
+        else:
+            print(form.errors)
 
     else:
         form = CreateCommonTestForm(request.POST, request.FILES)
@@ -120,17 +140,31 @@ def AddChoiceTestView(request, pk):
             lecture = get_object_or_404(Lecture, id=pk)
             test.lecture = lecture
             test.save()
-            return redirect(reverse('lecture_detail', args=[lecture.id]))
+            return redirect(reverse('add_answer', args=[test.id]))
 
     else:
         form = CreateChoiceTestForm(request.POST, request.FILES)
     return render(request, simplified_path('addChoiceTest'), {'form': form})
 
 
-class ChoiceTestDetail(DetailView):
+class ChoiceTestDetail(UpdateView):
     template_name = simplified_path("choiceTestDetail")
     model = ChoiceTest
+    form_class = CreateChoiceTestForm
     context_object_name = 'choice_test'
+    success_url = reverse_lazy('content_creator_dashboard')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        answers = Answer.objects.filter(choice_test=self.object)
+        context['answers'] = answers
+        return context
+
+    # def get_success_url(self):
+    #     lecture_id = self.kwargs['pk']
+    #
+    #     return reverse('lecture_detail', args=[lecture_id])
+
 
 
 def AddAnswerView(request, pk):
@@ -157,7 +191,11 @@ class LectureDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         tests = CommonTest.objects.filter(lecture=self.object)
+        choice_tests = ChoiceTest.objects.filter(lecture=self.object)
+        answers = Answer.objects.filter(choice_test__in=choice_tests)
         context['tests'] = tests
+        context['choice_tests'] = choice_tests
+        context['answers'] = answers
         return context
 
 
@@ -170,30 +208,11 @@ class AllAuthorCoursesView(ListView):
         return MathCourse.objects.filter(author=user_id)
 
 
-# def CreateLectureView(request):
-#     if request.method == 'POST':
-#         form = CreateLectureForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             module = form.save(commit=False)
-#             module.save()
-#
-#             return redirect('content_creator_dashboard')
-#
-#     else:
-#         form = CreateLectureForm
-#     return render(request, simplified_path('createLecturePage'), {'form': form})
-
-# def form_valid(self, form):
-#     form.instance.author = self.request.user
-#     return super().form_valid(form)
-
-
 class AuthorDetailCourseView(DetailView):
     template_name = simplified_path('authorCourseDetail')
     model = MathCourse
     context_object_name = 'course'
-    
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         course = self.object
@@ -235,6 +254,7 @@ class UpdateCourseView(UpdateView):
     def get_success_url(self):
         return reverse_lazy('content_creator_dashboard')
 
+
 #
 # def createTestView(request, pk):
 #     if request.method == "POST":
@@ -248,3 +268,61 @@ class UpdateCourseView(UpdateView):
 #     else:
 #         form = CreateLectureForm
 #     return render(request, simplified_path('createLecturePage'), {'form': form})
+
+
+def delete_answer(request, pk):
+    answer = get_object_or_404(Answer, id=pk)
+    answer.delete()
+    return HttpResponse(status=204)
+
+
+class UpdateAnswerView(UpdateView):
+    template_name = simplified_path('addAnswer')
+    model = Answer
+    fields = ('answer', 'is_right',)
+    success_url = reverse_lazy('content_creator_dashboard')
+
+
+class UpdateLectureView(UpdateView):
+    template_name = simplified_path('updateLecture')
+    model = Lecture
+    fields = ('title', 'lecture_image', 'description', 'paragraph',)
+
+    def get_success_url(self):
+        lecture_id = self.kwargs['pk']
+        return reverse('lecture_detail', args=[lecture_id])
+
+
+def delete_lecture(request, pk):
+    lecture = get_object_or_404(Lecture, id=pk)
+    lecture.delete()
+    author = request.user.id
+
+    return redirect(reverse('all_author_courses', args=[author]))
+
+
+# class UpdateModuleView()
+class Profile(UpdateView):
+    template_name = simplified_path('profile')
+    model = AuthorProfile
+    form_class = UpdateProfile
+    success_url = reverse_lazy('content_creator_dashboard')
+
+    def get_object(self, queryset=None):
+        author_id = self.kwargs.get('pk')
+
+        author_profile = get_object_or_404(AuthorProfile, author_id=author_id)
+
+        return author_profile
+
+
+def Deletequestion(request, pk, id):
+    test = get_object_or_404(CommonTest, pk=pk)
+    test.delete()
+    return redirect('lecture_detail', pk=id)
+
+
+def ChoiceDeletequestion(request, pk, id):
+    test = get_object_or_404(ChoiceTest, pk=pk)
+    test.delete()
+    return redirect('lecture_detail', pk=id)
